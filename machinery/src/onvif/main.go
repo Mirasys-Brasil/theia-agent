@@ -309,6 +309,34 @@ func GetPTZConfigurationsFromDevice(device *onvif.Device) (ptz.GetConfigurations
 	return configurations, err
 }
 
+func DeviceInformationFromDevice(d *onvif.Device) (device.GetDeviceInformationResponse, error) {
+	// We'll try to receive the PTZ configurations from the server
+	var configurations device.GetDeviceInformationResponse
+
+	// Get the PTZ configurations from the device
+	resp, err := d.CallMethod(device.GetDeviceInformation{})
+	var b []byte
+	if resp != nil {
+		b, err = io.ReadAll(resp.Body)
+		resp.Body.Close()
+	}
+
+	if err == nil {
+		stringBody := string(b)
+		decodedXML, et, err := getXMLNode(stringBody, "GetDeviceInformationResponse")
+		if err != nil {
+			log.Log.Debug("onvif.DeviceInformationFromDevice(): " + err.Error())
+			return configurations, err
+		} else {
+			if err := decodedXML.DecodeElement(&configurations, et); err != nil {
+				log.Log.Debug("onvif.DeviceInformationFromDevice(): " + err.Error())
+				return configurations, err
+			}
+		}
+	}
+	return configurations, err
+}
+
 func GetPositionFromDevice(configuration models.Configuration) (xsdonvif.PTZVector, error) {
 	var position xsdonvif.PTZVector
 	// Connect to Onvif device

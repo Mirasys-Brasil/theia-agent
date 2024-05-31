@@ -260,6 +260,7 @@ loop:
 		onvifPresets := "false"
 		var onvifPresetsList []byte
 		var onvifEventsList []byte
+		var onvifDeviceInformation []byte
 		if config.Capture.IPCamera.ONVIFXAddr != "" {
 			cameraConfiguration := configuration.Config.Capture.IPCamera
 			device, _, err := onvif.ConnectToOnvifDevice(&cameraConfiguration)
@@ -330,6 +331,12 @@ loop:
 					}
 				}
 
+				deviceInformation, err := onvif.DeviceInformationFromDevice(device)
+				if err == nil {
+					onvifDeviceInformation = []byte(fmt.Sprintf("[%s, %s, %s, %s, %s]", deviceInformation.Manufacturer, deviceInformation.Model, deviceInformation.FirmwareVersion, deviceInformation.SerialNumber, deviceInformation.HardwareId))
+				} else {
+					log.Log.Debug("cloud.HandleHeartBeat(): error while getting DEvice Information configurations: " + err.Error())
+				}
 			} else {
 				log.Log.Error("cloud.HandleHeartBeat(): error while connecting to ONVIF device: " + err.Error())
 				onvifPresetsList = []byte("[]")
@@ -448,6 +455,7 @@ loop:
 						"boot_time" : "%s",
 						"siteID" : "%s",
 						"onvif" : "%s",
+						"onvif_device_information: %s,
 						"onvif_zoom" : "%s",
 						"onvif_pantilt" : "%s",
 						"onvif_presets": "%s",
@@ -461,7 +469,7 @@ loop:
 						"docker" : true,
 						"kios" : false,
 						"raspberrypi" : false
-					}`, config.Key, kerberosAgentVersion, hub_encryption, e2e_encryption, system.Version, system.CPUId, username, key, name, isEnterprise, system.Hostname, system.Architecture, system.TotalMemory, system.UsedMemory, system.FreeMemory, system.ProcessUsedMemory, macs, ips, "0", "0", "0", uptimeString, boottimeString, config.HubSite, onvifEnabled, onvifZoom, onvifPanTilt, onvifPresets, onvifPresetsList, onvifEventsList, cameraConnected, hasBackChannel)
+					}`, config.Key, kerberosAgentVersion, hub_encryption, e2e_encryption, system.Version, system.CPUId, username, key, name, isEnterprise, system.Hostname, system.Architecture, system.TotalMemory, system.UsedMemory, system.FreeMemory, system.ProcessUsedMemory, macs, ips, "0", "0", "0", uptimeString, boottimeString, config.HubSite, onvifEnabled, onvifDeviceInformation, onvifZoom, onvifPanTilt, onvifPresets, onvifPresetsList, onvifEventsList, cameraConnected, hasBackChannel)
 
 				// Get the private key to encrypt the data using symmetric encryption: AES.
 				privateKey := config.HubPrivateKey
@@ -536,6 +544,7 @@ loop:
 					"siteID" : "%s",
 					"onvif" : "%s",
 					"onvif_zoom" : "%s",
+					"onvif_device_information: %s,
 					"onvif_pantilt" : "%s",
 					"onvif_presets": "%s",
 					"onvif_presets_list": %s,
@@ -546,7 +555,7 @@ loop:
 					"docker" : true,
 					"kios" : false,
 					"raspberrypi" : false
-				}`, config.Key, kerberosAgentVersion, system.Version, system.CPUId, username, key, name, isEnterprise, system.Hostname, system.Architecture, system.TotalMemory, system.UsedMemory, system.FreeMemory, system.ProcessUsedMemory, macs, ips, "0", "0", "0", uptimeString, boottimeString, config.HubSite, onvifEnabled, onvifZoom, onvifPanTilt, onvifPresets, onvifPresetsList, cameraConnected)
+				}`, config.Key, kerberosAgentVersion, system.Version, system.CPUId, username, key, name, isEnterprise, system.Hostname, system.Architecture, system.TotalMemory, system.UsedMemory, system.FreeMemory, system.ProcessUsedMemory, macs, ips, "0", "0", "0", uptimeString, boottimeString, config.HubSite, onvifEnabled, onvifDeviceInformation, onvifZoom, onvifPanTilt, onvifPresets, onvifPresetsList, cameraConnected)
 
 				var jsonStr = []byte(object)
 				buffy := bytes.NewBuffer(jsonStr)
