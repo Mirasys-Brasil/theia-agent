@@ -333,7 +333,8 @@ loop:
 
 				deviceInformation, err := onvif.DeviceInformationFromDevice(device)
 				if err == nil {
-					onvifDeviceInformation = []byte(fmt.Sprintf("[%s, %s, %s, %s, %s]", deviceInformation.Manufacturer, deviceInformation.Model, deviceInformation.FirmwareVersion, deviceInformation.SerialNumber, deviceInformation.HardwareId))
+					onvifDeviceInformation = []byte(fmt.Sprintf(`["%s", "%s", "%s", "%s", "%s"]`, deviceInformation.Manufacturer, deviceInformation.Model, deviceInformation.FirmwareVersion, deviceInformation.SerialNumber, deviceInformation.HardwareId))
+					log.Log.Info("cloud.HandleHeartBeat(): Onvif Device Informantion " + string(onvifDeviceInformation))
 				} else {
 					log.Log.Debug("cloud.HandleHeartBeat(): error while getting DEvice Information configurations: " + err.Error())
 				}
@@ -455,7 +456,7 @@ loop:
 						"boot_time" : "%s",
 						"siteID" : "%s",
 						"onvif" : "%s",
-						"onvif_device_information: %s,
+						"onvif_device_information" : %s,
 						"onvif_zoom" : "%s",
 						"onvif_pantilt" : "%s",
 						"onvif_presets": "%s",
@@ -543,8 +544,8 @@ loop:
 					"boot_time" : "%s",
 					"siteID" : "%s",
 					"onvif" : "%s",
+					"onvif_device_information": %s,
 					"onvif_zoom" : "%s",
-					"onvif_device_information: %s,
 					"onvif_pantilt" : "%s",
 					"onvif_presets": "%s",
 					"onvif_presets_list": %s,
