@@ -292,6 +292,12 @@ func OverrideWithEnvironmentVariables(configuration *models.Configuration) {
 					configuration.Config.Capture.FragmentedDuration = duration
 				}
 				break
+			case "AGENT_CAPTURE_FRAGMENTED_PART":
+				part, err := strconv.ParseInt(value, 10, 64)
+				if err == nil {
+					configuration.Config.Capture.FragmentedPart = part
+				}
+				break
 
 			/* Conditions */
 

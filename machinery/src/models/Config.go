@@ -67,6 +67,7 @@ type Capture struct {
 	ForwardWebRTC         string      `json:"forwardwebrtc"`
 	Fragmented            string      `json:"fragmented,omitempty" bson:"fragmented,omitempty"`
 	FragmentedDuration    int64       `json:"fragmentedduration,omitempty" bson:"fragmentedduration,omitempty"`
+	FragmentedPart        int64       `json:"fragmentedpart,omitempty" bson:"fragmentedpart,omitempty"`
 	PixelChangeThreshold  int         `json:"pixelChangeThreshold,omitempty"`
 }
 

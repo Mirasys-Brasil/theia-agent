@@ -236,8 +236,12 @@ func HandleRecordStream(queue *packets.Queue, configDirectory string, configurat
 						} else if pkt.Codec == "H265" {
 							videoTrack = myMuxer.AddVideoTrack(mp4.MP4_CODEC_H265, widthOption, heightOption)
 						}
-						// For an MP4 container, AAC is the only audio codec supported.
-						audioTrack = myMuxer.AddAudioTrack(mp4.MP4_CODEC_AAC)
+
+						audioSteams, _ := rtspClient.GetAudioStreams()
+						if len(audioSteams) > 0 {
+							// For an MP4 container, AAC is the only audio codec supported.
+							audioTrack = myMuxer.AddAudioTrack(mp4.MP4_CODEC_AAC)
+						}
 					} else {
 						log.Log.Error("capture.main.HandleRecordStream(continuous): " + err.Error())
 					}
@@ -404,8 +408,13 @@ func HandleRecordStream(queue *packets.Queue, configDirectory string, configurat
 						videoTrack = myMuxer.AddVideoTrack(mp4.MP4_CODEC_H265, widthOption, heightOption)
 					}
 				}
-				// For an MP4 container, AAC is the only audio codec supported.
-				audioTrack = myMuxer.AddAudioTrack(mp4.MP4_CODEC_AAC)
+
+				audioSteams, _ := rtspClient.GetAudioStreams()
+				if len(audioSteams) > 0 {
+					// For an MP4 container, AAC is the only audio codec supported.
+					audioTrack = myMuxer.AddAudioTrack(mp4.MP4_CODEC_AAC)
+				}
+
 				start := false
 
 				// Get as much packets we need.

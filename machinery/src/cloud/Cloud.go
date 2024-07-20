@@ -369,7 +369,7 @@ loop:
 
 			// This is the new way ;)
 			if config.HubURI != "" {
-				hubURI = config.HubURI + "/devices/heartbeat"
+				hubURI = config.HubURI + "/heartbeat"
 			}
 			if config.HubKey != "" {
 				key = config.HubKey
@@ -560,7 +560,7 @@ loop:
 
 				var jsonStr = []byte(object)
 				buffy := bytes.NewBuffer(jsonStr)
-				req, _ := http.NewRequest("POST", vaultURI+"/devices/heartbeat", buffy)
+				req, _ := http.NewRequest("POST", vaultURI+"/heartbeat", buffy)
 				req.Header.Set("Content-Type", "application/json")
 
 				resp, err := client.Do(req)
